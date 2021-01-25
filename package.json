@@ -1,0 +1,19 @@
+{
+  "name": "diggame",
+  "version": "1.0.0",
+  "description": "This is a multiplayer game where you as the play are doing something. well i don't know the rest but yess",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nooaandersson/DigGame.git"
+  },
+  "author": "Nox & CommandSigge",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nooaandersson/DigGame/issues"
+  },
+  "homepage": "https://github.com/nooaandersson/DigGame#readme"
+}
