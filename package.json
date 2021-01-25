@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nooaandersson/DigGame/issues"
   },
-  "homepage": "https://github.com/nooaandersson/DigGame#readme"
+  "homepage": "https://github.com/nooaandersson/DigGame#readme",
+  "dependencies": {
+    "three": "^0.124.0"
+  }
 }
