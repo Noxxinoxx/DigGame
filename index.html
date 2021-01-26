@@ -1,17 +1,18 @@
 <html>
     <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
+        <script src="https://unpkg.com/three/examples/jsm/controls/OrbitControls.js"></script>
     </head>
     <body>
         
         <script type="module">
-
+            import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/OrbitControls.js';
             const scene = new THREE.Scene();
             
             const camera = new THREE.PerspectiveCamera(
                 75, window.innerWidth / window.innerHeight, 
                 0.1,
-                1000
+                10000
             ); 
 
             const renderer = new THREE.WebGLRenderer();
@@ -20,12 +21,36 @@
 
             document.body.appendChild(renderer.domElement)
 
+            
+
+
             const geo = new THREE.BoxGeometry(2,2,2);
             const mata = new THREE.MeshBasicMaterial({color: 0x00ff00});
             const cube = new THREE.Mesh(geo, mata); 
             scene.add(cube);
 
-            camera.position.z = 5;
+            
+            const controls = new OrbitControls( camera, renderer.domElement );
+            camera.position.set( 0, 20, 100 );
+            controls.update();
+
+            document.addEventListener("keydown", function(event) {
+                if(event.keyCode == 87) {
+                    camera.position.y += 0.2;
+                }else if(event.keyCode == 83) {
+                    camera.position.y -= 0.2;
+                }else if(event.keyCode == 68) {
+                    camera.position.x += 0.2;
+                }else if(event.keyCode == 65) {
+                    camera.position.x -= 0.2;
+                }else if(event.keyCode == 81) {
+                    camera.position.z += 0.2;
+                }else if(event.keyCode == 69){
+                    camera.position.z -= 0.2;
+                }
+                
+            })
+
 
 
             function animate() {
