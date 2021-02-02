@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nooaandersson/DigGame#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "three": "^0.124.0"
   }
 }
