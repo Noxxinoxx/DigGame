@@ -115,7 +115,7 @@
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
     var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-    var texture = loader.load("grass.jpeg")
+    var texture = loader.load("sky.jpeg")
     var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.BackSide})
     var materialArray = [];
 
@@ -190,6 +190,10 @@
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), rotateAngle);
     if ( pressed['F'] )
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle);
+    if(pressed[' ']) {
+        sphereGroup.translateY(moveDistance)
+        console.log("he")
+    }
   }
 
   /**
