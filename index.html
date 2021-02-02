@@ -100,7 +100,7 @@
     });
     var geometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     var plane = new THREE.Mesh(geometry, material);
-    plane.position.y = -0.5;
+    plane.position.y = 0.5;
     plane.rotation.x = Math.PI / 2;
     scene.add(plane);
     return plane;
@@ -114,11 +114,12 @@
     var imagePrefix = '';
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
-    var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 ); 
-    
+    var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
+    var texture = loader.load("grass.jpeg")
+    var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.BackSide})
     var materialArray = [];
 
-    var sky = new THREE.Mesh( geometry, materialArray );
+    var sky = new THREE.Mesh( geometry, material );
     scene.add(sky);
   }
 
