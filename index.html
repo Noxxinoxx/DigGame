@@ -100,7 +100,7 @@
     });
     var geometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     var plane = new THREE.Mesh(geometry, material);
-    plane.position.y = 0.5;
+    plane.position.y = 1;
     plane.rotation.x = Math.PI / 2;
     scene.add(plane);
     return plane;
@@ -115,7 +115,7 @@
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
     var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
-    var texture = loader.load("grass.jpeg")
+    var texture = loader.load("sky.jpeg")
     var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.BackSide})
     var materialArray = [];
 
@@ -141,7 +141,7 @@
     var sphereGroup = new THREE.Group();
     sphereGroup.add(sphere)
 
-    sphereGroup.position.set(0, 24, 100);
+    sphereGroup.position.set(0, 25, 100);
     scene.add(sphereGroup);
     return [sphere, sphereGroup];
   }
@@ -191,14 +191,17 @@
     if ( pressed['F'] )
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle);
     
-    window.addEventListener("keypress", (event) => {
-      if(sphereGroup.position.y <= 25) {
-        if(pressed[" "]) {
-          sphereGroup.translateY(40)
-        }
+    if(pressed[" "]){
+      if(globalJump == true) {
+        sphereGroup.translateY(moveDistance * 40)
+        globalJump = false
+        setTimeout(() => {
+        globalJump = true;
+        }, 1000)
       }
       
-    })
+    }
+    
     
 
   }
@@ -226,7 +229,7 @@
   };
   function gravety() {
     if(sphereGroup.position.y > 25) {
-      sphereGroup.position.y -= 4
+      sphereGroup.position.y -= 4.5
     }
     
     
@@ -235,8 +238,9 @@
   // state
   var pressed = {};
   var clock = new THREE.Clock();
-
+  
   // globals
+  var globalJump = true;
   var scene = getScene();
   var camera = getCamera();
   var light = getLight(scene);
@@ -249,7 +253,7 @@
   var sphereData = getSphere(scene);
   var sphere = sphereData[0];
   var sphereGroup = sphereData[1];
-
+  
   addListeners();
   render();
   </script>
