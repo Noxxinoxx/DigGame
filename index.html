@@ -190,6 +190,17 @@
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), rotateAngle);
     if ( pressed['F'] )
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle);
+    
+    window.addEventListener("keypress", (event) => {
+      if(sphereGroup.position.y <= 25) {
+        if(pressed[" "]) {
+          sphereGroup.translateY(40)
+        }
+      }
+      
+    })
+    
+
   }
 
   /**
@@ -211,7 +222,15 @@
     renderer.render(scene, camera);
     moveSphere();
     moveCamera();
+    gravety()
   };
+  function gravety() {
+    if(sphereGroup.position.y > 25) {
+      sphereGroup.position.y -= 4
+    }
+    
+    
+  }
 
   // state
   var pressed = {};
