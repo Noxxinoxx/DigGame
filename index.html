@@ -191,20 +191,7 @@
     if ( pressed['F'] )
       sphereGroup.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle);
     
-    window.addEventListener("keydown", (event) => {
-       if(gobalJump == true) {
-         if(event.keyCode == 32) {
-          sphereGroup.translateX(moveDistance)
-          gobalJump = false;
-          console.log("g")
-        }
-         
-       }
-    })
-    window.addEventListener("keyup", (event) => {
-      gobalJump = true;
-    })    
-
+    
   }
 
   /**
