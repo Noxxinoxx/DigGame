@@ -193,10 +193,10 @@
     
     if(pressed[" "]){
       if(globalJump == true) {
-        sphereGroup.translateY(moveDistance * 40)
+        
         globalJump = false
         setTimeout(() => {
-        globalJump = true;
+          globalJump = true;
         }, 1000)
       }
       
