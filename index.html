@@ -141,7 +141,7 @@
     var sphereGroup = new THREE.Group();
     sphereGroup.add(sphere)
 
-    sphereGroup.position.set(0, 25, 100);
+    sphereGroup.position.set(0, 30, 100);
     scene.add(sphereGroup);
     return [sphere, sphereGroup];
   }
@@ -164,10 +164,11 @@
   **/
 
   function moveSphere() {
+    
     var delta = clock.getDelta(); // seconds
     var moveDistance = 200 * delta; // 200 pixels per second
     var rotateAngle = Math.PI / 2 * delta; // pi/2 radians (90 deg) per sec
-
+    var speed = 4; 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
       sphere.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle)
@@ -194,6 +195,9 @@
     if(pressed[" "]){
       if(globalJump == true) {
         
+        
+        sphereGroup.position.y = speed * (delta + 80);
+        console.log(sphereGroup.position.y)
         globalJump = false
         setTimeout(() => {
           globalJump = true;
@@ -208,7 +212,11 @@
   /**
   * Follow the sphere
   **/
-
+  function jump() {
+    
+    
+    
+  }
   function moveCamera() {
     var relativeCameraOffset = new THREE.Vector3(0,50,200);
     var cameraOffset = relativeCameraOffset.applyMatrix4(sphereGroup.matrixWorld);
@@ -227,8 +235,8 @@
     gravety()
   };
   function gravety() {
-    if(sphereGroup.position.y > 25) {
-      sphereGroup.position.y -= 4.5
+    if(sphereGroup.position.y > 30) {
+      sphereGroup.position.y -= 2.5
     }
     
     

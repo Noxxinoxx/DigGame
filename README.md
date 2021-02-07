@@ -3,3 +3,6 @@
 
 ### 01/26-2021
     - Bacis camera movment done!
+
+### 02/07-2021
+    - well made some mecs for the jumping function it dose not work but it is close to. I also made the world better with a huge cube that will be the sky then we have a platfrom that reps the ground.
