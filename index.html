@@ -92,6 +92,16 @@
   **/
 
   function getPlane(scene, loader) {
+    var r = [1,1,1,1,1]
+    var l = [1,1,1,1,1]
+    var u = [1,1,1,1,1]
+    var b = [1,1,1,1,1]
+    
+    var fillGroundPlane 
+
+    
+
+
     var texture = loader.load('grass.jpeg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
     texture.repeat.set( 10, 10 );
