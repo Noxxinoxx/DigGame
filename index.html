@@ -98,7 +98,7 @@
     var material = new THREE.MeshBasicMaterial({
       map: texture, side: THREE.DoubleSide
     });
-    var geometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+    var geometry = new THREE.PlaneGeometry(1000, 1000, 1000, 10);
     var plane = new THREE.Mesh(geometry, material);
     plane.position.y = 1;
     plane.rotation.x = Math.PI / 2;
@@ -111,16 +111,61 @@
   **/
 
   function getBackground(scene, loader) {
+    
+    var r = [1,1,1,1,1]
+    var l = [1,1,1,1,1]
+    var u = [1,1,1,1,1]
+    var b = [1,1,1,1,1]
     var imagePrefix = '';
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
-    var geometry = new THREE.BoxGeometry( 1000, 1000, 1000 );
+    
     var texture = loader.load("sky.jpeg")
-    var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.BackSide})
-    var materialArray = [];
+    for(iu = 0; iu < r.length; iu++) {
+      var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
+      var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide})
+      var skyr = new THREE.Mesh( geometry, material );
+      
+      scene.add(skyr);
+      skyr.position.x = 1000 * iu;
+      skyr.position.z = 875 * u.length
+    }for(ib = 0; ib < l.length; ib++) {
+     
+      var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
+      var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide})
+      var skyl = new THREE.Mesh( geometry, material );
+      
+      scene.add(skyl);
+      
+      skyl.rotation.y = Math.PI / 2 
+      skyl.position.z = 1000 * ib;
+      skyl.position.x = 875 * u.length
+      
+    }
+    
+    for(ir = 0; ir < r.length; ir++) {
+      var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
+      var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide})
+      var skyr = new THREE.Mesh( geometry, material );
+      
+      scene.add(skyr);
+      skyr.position.x = 1000 * ir;
+      skyr.position.z = -500
+    }for(il = 0; il < l.length; il++) {
+     
+      var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
+      var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide})
+      var skyl = new THREE.Mesh( geometry, material );
+      
+      scene.add(skyl);
+      
+      skyl.rotation.y = Math.PI / 2 
+      skyl.position.z = 1000 * il;
+      skyl.position.x = -500
+      
+    }
 
-    var sky = new THREE.Mesh( geometry, material );
-    scene.add(sky);
+    
   }
 
   /**
@@ -212,11 +257,7 @@
   /**
   * Follow the sphere
   **/
-  function jump() {
-    
-    
-    
-  }
+  
   function moveCamera() {
     var relativeCameraOffset = new THREE.Vector3(0,50,200);
     var cameraOffset = relativeCameraOffset.applyMatrix4(sphereGroup.matrixWorld);
