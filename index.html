@@ -168,7 +168,7 @@
     var delta = clock.getDelta(); // seconds
     var moveDistance = 200 * delta; // 200 pixels per second
     var rotateAngle = Math.PI / 2 * delta; // pi/2 radians (90 deg) per sec
-    var speed = 4; 
+    var speed = 3; 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
       sphere.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle)
@@ -196,7 +196,7 @@
       if(globalJump == true) {
         
         
-        sphereGroup.position.y = speed * (delta + 80);
+        sphereGroup.position.y += speed * (2000) * delta;
         console.log(sphereGroup.position.y)
         globalJump = false
         setTimeout(() => {
