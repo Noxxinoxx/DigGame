@@ -110,7 +110,7 @@
   }
 
   function renderGround(scene, loader) {
-    
+    var z = 0;
     var n = 0;
     var numberOffColums = 4;
     var r1 = [1,1,1,1,1,2,
@@ -123,9 +123,15 @@
     for(i = 0; i < r1.length; i++) {
       
       if(r1[i] == 2) {
+        
         x = x + 1
+        n = x * 5
+        
       }else {
-        getPlane(scene, loader, x, i)
+        z = r1[i] - n
+
+        console.log(z, n)
+        getPlane(scene, loader, z, y)
       }
       
 
@@ -160,7 +166,7 @@
       
       scene.add(skyr);
       skyr.position.x = 1000 * iu;
-      skyr.position.z = 875 * u.length
+      skyr.position.z = 900 * u.length
     }for(ib = 0; ib < l.length; ib++) {
      
       var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
@@ -171,7 +177,7 @@
       
       skyl.rotation.y = Math.PI / 2 
       skyl.position.z = 1000 * ib;
-      skyl.position.x = 875 * u.length
+      skyl.position.x = 900 * u.length
       
     }
     
