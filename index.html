@@ -87,6 +87,14 @@
     return controls;
   }
 
+
+  function Collison() {
+
+  }
+
+
+
+
   /**
   * Get grass
   **/
@@ -108,9 +116,9 @@
     scene.add(plane);
     return plane;
   }
-  function getPlane(scene, loader, x, y) {
+  function getPlane(scene, loader, x, y,) {
 
-    var texture = loader.load('grass.jpeg');
+    var texture = loader.load('floor.jpeg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
     texture.repeat.set( 10, 10 );
     var material = new THREE.MeshBasicMaterial({
@@ -137,13 +145,13 @@
     var n = 0;
     
     var r1 = [
-      1,3,1,1,1,3,1,2,
-      1,1,3,1,1,3,1,2,
-      1,1,0,1,1,1,1,2,
-      1,1,1,3,1,3,1,2,
-      1,1,1,3,1,1,1,2,
       1,1,1,1,1,1,1,2,
-      1,1,1,3,1,1,
+      1,1,1,1,1,1,1,2,
+      1,1,1,3,3,1,1,2,
+      1,1,1,3,3,1,1,2,
+      1,1,1,1,1,1,1,2,
+      1,1,1,1,1,1,1,2,
+      1,1,1,1,1,1,
               ]
     var x = 0;
     var firstItorantion = true;
@@ -190,6 +198,7 @@
  // folrmen för att lösa detta var (1000 * längden av array) - 500 för att centrera väggarena.
  // render function funkar glöm inte att uppdatera logboken så det ser bra ut. uträningen för den här denlen är enkel
  // men kommer behöva lite förendingar.
+ // Måste gör ett collsion system.
   function getBackground(scene, loader) {
     
     var r = [1,1,1,1,1,1,1]
@@ -200,7 +209,7 @@
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
     
-    var texture = loader.load("sky.jpeg")
+    var texture = loader.load("WallTextureStone.jpeg")
     for(iu = 0; iu < r.length; iu++) {
       var geometry = new THREE.PlaneGeometry( 1000, 1000, 1000 );
       var material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide})
