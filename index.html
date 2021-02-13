@@ -13,6 +13,8 @@
   * Generate a scene object with a background color
   **/
   var points = []
+  var coordsx = []
+  var coordsz = []
   function getScene() {
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
@@ -86,8 +88,6 @@
     controls.panSpeed = 0.4;
     return controls;
   }
-
-
   function Collison(scene, renderer, px,py,pz) {
     
     points.push(new THREE.Vector3(px,py,pz))
@@ -97,8 +97,6 @@
     const line = new THREE.Line(geometry, material)
     scene.add(line)
     renderer.render(scene, camera)
-    return line
-
   }
   /**
   * Get grass
@@ -144,7 +142,6 @@
   function renderGround(scene, loader, y) {
     var z = 0;
     var n = 0;
-    
     var r1 = [
       1,1,1,1,2,
       1,1,1,1,2,
@@ -154,7 +151,6 @@
     var x = 0;
     var firstItorantion = true;
     for(i = 0; i <= r1.length; i++) {
-      
       if(r1[i] == 2) {
         if(firstItorantion == true) {
           var gg = i + 1;
@@ -166,23 +162,26 @@
         console.log(z, n, x, i)
       }else if(r1[i] == 0) {
         z = i - n 
-        
-        getsky(scene, loader, x, z, y)
-        Collison(scene, renderer,x,y,z)
+        getsky(scene, loader, x, z, y) 
+        coordsx.push(x)
+        coordsz.push(z)
+        console.log(coordsx, coordsz)
+
       }else if(r1[i] == 3) {
-       console.log("")
+        coordsx.push(x)
+        coordsz.push(z)
+        console.log(coordsx, coordsz)
       }
       else {
         z = i - n 
-        
         getPlane(scene, loader, x, z, y)
-        Collison(scene, renderer,x,y,z)
+        coordsx.push(x)
+        coordsz.push(z)
+        console.log(coordsx, coordsz)
       }
-
+      
     }
   }
-
-
   /**
   * Add background
   **/
@@ -245,8 +244,6 @@
       skyl.position.x = -500
       
     }
-
-    
   }
 
   /**
@@ -320,19 +317,14 @@
     
     if(pressed[" "]){
       if(globalJump == true) {
-        
-        
         sphereGroup.position.y += speed * (2000) * delta;
         console.log(sphereGroup.position.y)
         globalJump = false
         setTimeout(() => {
           globalJump = true;
         }, 1000)
-      }
-      
+      } 
     }
-    
-    
   }
 
   /**
@@ -348,10 +340,16 @@
     camera.lookAt(sphereGroup.position);
   }
 
+
   // Render loop
   function render() {
     requestAnimationFrame(render);
-    //Collison(scene, renderer)
+    setTimeout(function coll() {
+      for(i = 0; i < coordsx.length; i++) {
+        Collison(scene, renderer, coordsx[i], -500, coordsz[i])
+      }
+    },1000)
+    
     
     renderer.render(scene, camera);
     moveSphere();
@@ -363,8 +361,6 @@
     if(sphereGroup.position.y > -450) {
       sphereGroup.position.y -= 5
     }
-    
-    
   }
 
   // state
@@ -378,16 +374,19 @@
   var camera = getCamera();
   var light = getLight(scene);
   var renderer = getRenderer();
+  
   var gobalJump = true; 
 
   // add meshes
   var loader = new THREE.TextureLoader();
-  var floor = renderGround(scene, loader, -500)
-  var ceiling = renderGround(scene, loader, 500)
   var background = getBackground(scene, loader);
   var sphereData = getSphere(scene);
   var sphere = sphereData[0];
   var sphereGroup = sphereData[1];
+  
+  var floor = renderGround(scene, loader, -500)
+  var ceiling = renderGround(scene, loader, 500)
+  
   
   addListeners();
   render();
