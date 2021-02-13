@@ -8,11 +8,11 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js'></script>
   <script src='https://threejs.org/examples/js/controls/TrackballControls.js'></script>
   <script>
-
+  {var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);}
   /**
   * Generate a scene object with a background color
   **/
-
+  var points = []
   function getScene() {
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
@@ -88,19 +88,23 @@
   }
 
 
-  function Collison() {
+  function Collison(scene, renderer, px,py,pz) {
+    
+    points.push(new THREE.Vector3(px,py,pz))
+    points.push(new THREE.Vector3(sphereGroup.position.x, sphereGroup.position.y, sphereGroup.position.z))
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    const line = new THREE.Line(geometry, material)
+    scene.add(line)
+    renderer.render(scene, camera)
+    return line
 
   }
-
-
-
-
   /**
   * Get grass
   **/
 
-  function getsky(scene, loader, x, y) {
-
+  function getsky(scene, loader, x, z, y) {
     var texture = loader.load('sky.jpeg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
     texture.repeat.set( 10, 10 );
@@ -109,15 +113,14 @@
     });
     var geometry = new THREE.PlaneGeometry(1000, 1000, 1000, 10);
     var plane = new THREE.Mesh(geometry, material);
-    plane.position.y = -500
-    plane.position.z = 1000 * y
+    plane.position.y = y
+    plane.position.z = 1000 * z
     plane.position.x = 1000 * x;
     plane.rotation.x = Math.PI / 2;
     scene.add(plane);
     return plane;
   }
-  function getPlane(scene, loader, x, y,) {
-
+  function getPlane(scene, loader, x, z,y) {
     var texture = loader.load('floor.jpeg');
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
     texture.repeat.set( 10, 10 );
@@ -126,32 +129,27 @@
     });
     var geometry = new THREE.PlaneGeometry(1000, 1000, 1000, 10);
     var plane = new THREE.Mesh(geometry, material);
-    plane.position.y = -500
-    plane.position.z = 1000 * y
+    plane.position.y = y
+    plane.position.z = 1000 * z
     plane.position.x = 1000 * x;
     plane.rotation.x = Math.PI / 2;
     scene.add(plane);
     return plane;
   }
-
-
   //inte optimalt renderings system.
   //det är ett optimerat system nu men man måste hardcoda hur står spelyta man har detta gör det svårt att ändra saker ingame sen
   //men jag har en mattematisk formel för att göra detta så jag kommer implementera det senare så kommer man inte behöva räkna själv.
   //update rendersystement funkar nu. Nu måste jag bara fixa lite lag det gör jag genom att ändra textuernas infalls
   //upplösning till något som passar three js bättre.
-  function renderGround(scene, loader) {
+  function renderGround(scene, loader, y) {
     var z = 0;
     var n = 0;
     
     var r1 = [
-      1,1,1,1,1,1,1,2,
-      1,1,1,1,1,1,1,2,
-      1,1,1,3,3,1,1,2,
-      1,1,1,3,3,1,1,2,
-      1,1,1,1,1,1,1,2,
-      1,1,1,1,1,1,1,2,
-      1,1,1,1,1,1,
+      1,1,1,1,2,
+      1,1,1,1,2,
+      1,1,1,1,2,
+      1,1,1,1,
               ]
     var x = 0;
     var firstItorantion = true;
@@ -166,28 +164,22 @@
         x = x + 1
         n = x * gg
         console.log(z, n, x, i)
-      
       }else if(r1[i] == 0) {
         z = i - n 
-        console.log("z: " + z, "n: " + n, "x: " + x, "i: " + i)
-        getsky(scene, loader, x, z)
+        
+        getsky(scene, loader, x, z, y)
+        Collison(scene, renderer,x,y,z)
       }else if(r1[i] == 3) {
-        console.log(i)
+       console.log("")
       }
       else {
-        
         z = i - n 
-        console.log("z: " + z, "n: " + n, "x: " + x, "i: " + i)
-        getPlane(scene, loader, x, z)
+        
+        getPlane(scene, loader, x, z, y)
+        Collison(scene, renderer,x,y,z)
       }
-      
-
 
     }
-
-
-
-
   }
 
 
@@ -201,10 +193,10 @@
  // Måste gör ett collsion system.
   function getBackground(scene, loader) {
     
-    var r = [1,1,1,1,1,1,1]
-    var l = [1,1,1,1,1,1,1]
-    var u = [1,1,1,1,1,1,1]
-    var b = [1,1,1,1,1,1,1]
+    var r = [1,1,1,1]
+    var l = [1,1,1,1]
+    var u = [1,1,1,1]
+    var b = [1,1,1,1]
     var imagePrefix = '';
     var directions  = ['right', 'left', 'top', 'bottom', 'front', 'back'];
     var imageSuffix = '.bmp';
@@ -300,7 +292,7 @@
   function moveSphere() {
     
     var delta = clock.getDelta(); // seconds
-    var moveDistance = 2000 * delta; // 200 pixels per second
+    var moveDistance = 200 * delta; // 200 pixels per second
     var rotateAngle = Math.PI / 2 * delta; // pi/2 radians (90 deg) per sec
     var speed = 3; 
     // move forwards/backwards/left/right
@@ -359,14 +351,17 @@
   // Render loop
   function render() {
     requestAnimationFrame(render);
+    //Collison(scene, renderer)
+    
     renderer.render(scene, camera);
     moveSphere();
     moveCamera();
     gravety()
+    
   };
   function gravety() {
     if(sphereGroup.position.y > -450) {
-      sphereGroup.position.y -= 2.5
+      sphereGroup.position.y -= 5
     }
     
     
@@ -377,6 +372,7 @@
   var clock = new THREE.Clock();
   
   // globals
+  
   var globalJump = true;
   var scene = getScene();
   var camera = getCamera();
@@ -386,7 +382,8 @@
 
   // add meshes
   var loader = new THREE.TextureLoader();
-  var floor = renderGround(scene, loader)
+  var floor = renderGround(scene, loader, -500)
+  var ceiling = renderGround(scene, loader, 500)
   var background = getBackground(scene, loader);
   var sphereData = getSphere(scene);
   var sphere = sphereData[0];
