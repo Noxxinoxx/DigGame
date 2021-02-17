@@ -22,6 +22,27 @@
     return scene;
   }
 
+  function renderNodes(scene, x,y,z) {
+    var geometry = new THREE.SphereGeometry( 1, 1, 1 );
+    var material = new THREE.MeshPhongMaterial({
+      color: 0xd6921d,
+      emissive: 0xaf752a,
+      side: THREE.FrontSide,
+      flatShading: true
+    });
+    var node = new THREE.Mesh( geometry, material );
+
+    // create a group for translations and rotations
+    var nodeGroup = new THREE.Group();
+    nodeGroup.add(node)
+
+    nodeGroup.position.set(x * 100, -45, z * 100);
+    
+    scene.add(nodeGroup);
+    return [node, nodeGroup];
+  }
+
+
   /**
   * Generate the camera to be used in the scene. Camera args:
   *   [0] field of view: identifies the portion of the scene
@@ -190,8 +211,10 @@
     
     for(i = 0; i < coordsx.length; i++) {
       t = true;
-      Collison(scene, coordsx[i], -50, coordsz[i])
+      //Collison(scene, coordsx[i], -50, coordsz[i])
+      renderNodes(scene, coordsx[i], -45, coordsz[i])
     }
+    
     
   }
   /**
@@ -394,6 +417,7 @@
   var ceiling = renderGround(scene, loader, 50, THREE.FrontSide)
   
   
+  renderNodes(scene)
   addListeners();
   render();
 
