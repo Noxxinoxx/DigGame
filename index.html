@@ -22,6 +22,7 @@
       /**
        * Generate a scene object with a background color
        **/
+      var getPoints = true;
       var gravetyOn = true;
       var pointsText = 0;
       var points = [];
@@ -83,14 +84,15 @@
           if (Math.round(sphereGroup.position.x) == coordsx[i] * 100) {
             if (Math.round(sphereGroup.position.z) == coordsz[i] * 100) {
               console.log(coordsz);
-
               var GetObjectForRemoval = scene.getObjectByName(i.toString());
               scene.remove(GetObjectForRemoval);
-
-              var intString = points + 1;
-              //document
-              //  .getElementById("points")
-              //  .appendChild(document.createTextNode(intString.toString()));
+              if(getPoints == true) {
+                getPoints = false;
+                pointsText = pointsText + 1;
+                document.getElementById("points").innerText = pointsText.toString();
+                
+              }
+              
             }
           }
         }
@@ -432,6 +434,9 @@
         CollForPoints(scene);
         moveSphere();
         moveCamera();
+        setTimeout(function f() {
+          getPoints = true;
+        },1000)
         if (gravetyOn == true) {
           gravety();
         }
@@ -486,7 +491,7 @@
       Time : 60
     </p>
     <p
-      id="points"
+      
       style="
         margin-left: 100px;
         margin-top: -690px;
@@ -496,7 +501,20 @@
         font-family: Arial, Helvetica, sans-serif;
       "
     >
-      Points : 0
+      Points : 
+    </p>
+    <p
+      id="points"
+      style="
+        margin-left: 250px;
+        margin-top: -690px;
+        position: absolute;
+        z-index: 0;
+        font-size: 40;
+        font-family: Arial, Helvetica, sans-serif;
+      "
+    >
+      0
     </p>
   </body>
 </html>
