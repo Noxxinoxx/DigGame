@@ -3,7 +3,7 @@ const app = express()
 app.use(express.static('public'))
 
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "index.html")
+    res.sendFile("/index.html")
 })
 
 // start the server listening for requests
