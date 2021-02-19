@@ -86,13 +86,13 @@
               console.log(coordsz);
               var GetObjectForRemoval = scene.getObjectByName(i.toString());
               scene.remove(GetObjectForRemoval);
-              if(getPoints == true) {
+              if (getPoints == true) {
                 getPoints = false;
                 pointsText = pointsText + 1;
-                document.getElementById("points").innerText = pointsText.toString();
-                
+                document.getElementById(
+                  "points"
+                ).innerText = pointsText.toString();
               }
-              
             }
           }
         }
@@ -426,17 +426,23 @@
         camera.position.z = cameraOffset.z;
         camera.lookAt(sphereGroup.position);
       }
-
+      var timee = true;
       // Render loop
+      if (timee == true) {
+        setInterval(() => {
+          time();
+        }, 1000);
+      }
       function render() {
         requestAnimationFrame(render);
         renderer.render(scene, camera);
         CollForPoints(scene);
         moveSphere();
         moveCamera();
+
         setTimeout(function f() {
           getPoints = true;
-        },1000)
+        }, 1000);
         if (gravetyOn == true) {
           gravety();
         }
@@ -446,6 +452,19 @@
           if (sphereGroup.position.y > -45) {
             sphereGroup.position.y -= 5;
           }
+        }
+      }
+      var timeClock = 60;
+      function time() {
+        var getDocument = document.getElementById("time");
+
+        timeClock = timeClock - 1;
+
+        getDocument.innerText = timeClock;
+        if (timeClock == 0) {
+          var gameover = document.getElementById("gameover");
+          gameover.hidden = false;
+          timee = false;
         }
       }
 
@@ -477,6 +496,21 @@
       addListeners();
       render();
     </script>
+    <h1
+      hidden
+      id="gameover"
+      style="
+        
+        margin-left: 500px;
+        margin-top: -690px;
+        position: absolute;
+        z-index: 0;
+        font-size: 40;
+        font-family: Arial, Helvetica, sans-serif;
+      "
+    >
+      GAME OVER (RELOAD TO PLAY AGIAN)
+    </h1>
     <p
       id="time"
       style="
@@ -491,7 +525,6 @@
       Time : 60
     </p>
     <p
-      
       style="
         margin-left: 100px;
         margin-top: -690px;
@@ -501,7 +534,7 @@
         font-family: Arial, Helvetica, sans-serif;
       "
     >
-      Points : 
+      Points :
     </p>
     <p
       id="points"
