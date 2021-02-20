@@ -28,6 +28,7 @@
       var points = [];
       var coordsx = [];
       var coordsz = [];
+      var TextArray = [];
       function getScene() {
         var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x111111);
@@ -46,23 +47,58 @@
       function BackTrackLog() {
         console.log("something is undefined in RenderNodes");
       }
+      var textLeg = 0;
+      function renderNodes(scene, x, y, z, namee, LoadSpeedUpPowerUp) {
 
-      function renderNodes(scene, x, y, z, namee) {
         if (namee == undefined) {
           BackTrackLog();
         } else {
-          var geometry = new THREE.CubeGeometry(1, 1, 1);
+          
+          if (LoadSpeedUpPowerUp == true) {
+            TextArray.push(1);
+            
+            const loader = new THREE.FontLoader();
+            loader.load(
+              "fonts/helvetiker_regular.typeface.json",
+              function (font) {
+                const geo = new THREE.TextGeometry("Speed Up!", {
+                  font: font,
+                  size: 1,
+                  height: 1,
+                });
+                geo.computeBoundingBox();
+                var textMaterial = new THREE.MeshPhongMaterial({
+                  color: 0xff0000,
+                  specular: 0xffffff,
+                });
+                var mesh = new THREE.Mesh(geo, textMaterial);
+                mesh.position.x = x * 100;
+                mesh.position.y = y + 3;
+                mesh.position.z = z * 100;
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.name = "text" + textLeg
+                
+                geo.center();
+
+                
+                scene.add(mesh);
+                textLeg = textLeg + 1;
+              }
+            );
+          }
+
+          var geometry = new THREE.CubeGeometry(2, 2, 2);
+          const color = new THREE.Color("skyblue");
           var material = new THREE.MeshPhongMaterial({
-            color: 0xd6921d,
-            emissive: 0xaf752a,
+            color: color,
+            emissive: color,
             side: THREE.FrontSide,
             flatShading: true,
           });
           var node = new THREE.Mesh(geometry, material);
           node.name = namee.toString();
           node.position.set(x * 100, y, z * 100);
-          console.log(coordsz);
-          console.log(node.name);
           scene.add(node);
         }
       }
@@ -79,13 +115,22 @@
        *     clipping plane are culled from the scene
        **/
 
+      function AnimateTextPowerUp(scene) {
+        for (i = 0; i < TextArray.length; i++) {
+          var TextToAnimate = scene.getObjectByName("text" + i.toString());
+          TextToAnimate.rotation.y += 0.005;
+        }
+      }
+
       function CollForPoints(scene) {
         for (i = 0; i < coordsx.length; i++) {
           if (Math.round(sphereGroup.position.x) == coordsx[i] * 100) {
             if (Math.round(sphereGroup.position.z) == coordsz[i] * 100) {
-              console.log(coordsz);
               var GetObjectForRemoval = scene.getObjectByName(i.toString());
+              var TextObject = scene.getObjectByName("text" + i.toString());
               scene.remove(GetObjectForRemoval);
+              TextObject.position.x = 1000;
+
               if (getPoints == true) {
                 getPoints = false;
                 pointsText = pointsText + 1;
@@ -246,9 +291,18 @@
       }
 
       function RenderPointsArray(scene) {
+        
         for (i = 0; i < coordsx.length; i++) {
-          //Collison(scene, coordsx[i], -50, coordsz[i])
-          renderNodes(scene, coordsx[i], -45, coordsz[i], i);
+          var random = Math.floor(Math.random() * 5)
+          var RandomPowerUp = false;
+          if(random == i) {
+            RandomPowerUp = true;
+          }else {
+            RandomPowerUp = false;
+          }
+          renderNodes(scene, coordsx[i], -45, coordsz[i], i, RandomPowerUp);
+          console.log(RandomPowerUp)
+          
         }
       }
       /**
@@ -439,7 +493,7 @@
         CollForPoints(scene);
         moveSphere();
         moveCamera();
-
+        AnimateTextPowerUp(scene);
         setTimeout(function f() {
           getPoints = true;
         }, 1000);
@@ -500,7 +554,6 @@
       hidden
       id="gameover"
       style="
-        
         margin-left: 500px;
         margin-top: -690px;
         position: absolute;
