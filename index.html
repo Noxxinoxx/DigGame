@@ -22,13 +22,7 @@
       /**
        * Generate a scene object with a background color
        **/
-      var getPoints = true;
-      var gravetyOn = true;
-      var pointsText = 0;
-      var points = [];
-      var coordsx = [];
-      var coordsz = [];
-      var TextArray = [];
+      
       function getScene() {
         var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x111111);
@@ -49,14 +43,12 @@
       }
       var textLeg = 0;
       function renderNodes(scene, x, y, z, namee, LoadSpeedUpPowerUp) {
-
         if (namee == undefined) {
           BackTrackLog();
         } else {
-          
           if (LoadSpeedUpPowerUp == true) {
-            TextArray.push(1);
-            
+            TextArray.push(i);
+
             const loader = new THREE.FontLoader();
             loader.load(
               "fonts/helvetiker_regular.typeface.json",
@@ -77,11 +69,8 @@
                 mesh.position.z = z * 100;
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
-                mesh.name = "text" + textLeg
-                
+                mesh.name = "text" + textLeg;
                 geo.center();
-
-                
                 scene.add(mesh);
                 textLeg = textLeg + 1;
               }
@@ -126,18 +115,30 @@
         for (i = 0; i < coordsx.length; i++) {
           if (Math.round(sphereGroup.position.x) == coordsx[i] * 100) {
             if (Math.round(sphereGroup.position.z) == coordsz[i] * 100) {
-              var GetObjectForRemoval = scene.getObjectByName(i.toString());
-              var TextObject = scene.getObjectByName("text" + i.toString());
-              scene.remove(GetObjectForRemoval);
-              TextObject.position.x = 1000;
+              
+                var GetObjectForRemoval = scene.getObjectByName(i.toString());
+                
+                scene.remove(GetObjectForRemoval);
+                for(ii = 0; ii < TextArray.length; ii++) {
+                  var TextObject = scene.getObjectByName(
+                    "text" + ii.toString(),
+                    true
+                  );
+                  if(i == TextArray[ii]) {
+                    TextObject.position.x = 1000;
+                    speedShp = 50;
+                  }
+                }
+                
 
-              if (getPoints == true) {
-                getPoints = false;
-                pointsText = pointsText + 1;
-                document.getElementById(
-                  "points"
-                ).innerText = pointsText.toString();
-              }
+                if (getPoints == true) {
+                  getPoints = false;
+                  pointsText = pointsText + 1;
+                  document.getElementById(
+                    "points"
+                  ).innerText = pointsText.toString();
+                }
+              
             }
           }
         }
@@ -291,18 +292,16 @@
       }
 
       function RenderPointsArray(scene) {
-        
         for (i = 0; i < coordsx.length; i++) {
-          var random = Math.floor(Math.random() * 5)
+          var random = Math.floor(Math.random() * 5);
           var RandomPowerUp = false;
-          if(random == i) {
+          if (random == i) {
             RandomPowerUp = true;
-          }else {
+          } else {
             RandomPowerUp = false;
           }
           renderNodes(scene, coordsx[i], -45, coordsz[i], i, RandomPowerUp);
-          console.log(RandomPowerUp)
-          
+          console.log(RandomPowerUp);
         }
       }
       /**
@@ -430,8 +429,9 @@
        **/
 
       function moveSphere() {
+        
         var delta = clock.getDelta(); // seconds
-        var moveDistance = 20 * delta; // 200 pixels per second
+        var moveDistance = speedShp * delta;
         var rotateAngle = (Math.PI / 2) * delta; // pi/2 radians (90 deg) per sec
         var speed = 3;
         // move forwards/backwards/left/right
@@ -527,7 +527,15 @@
       var clock = new THREE.Clock();
 
       // globals
-
+      var speedShp = 20;
+       // 200 pixels per second
+      var getPoints = true;
+      var gravetyOn = true;
+      var pointsText = 0;
+      var points = [];
+      var coordsx = [];
+      var coordsz = [];
+      var TextArray = [];
       var globalJump = true;
       var scene = getScene();
       var camera = getCamera();
