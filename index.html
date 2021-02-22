@@ -7,7 +7,7 @@
     <script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
     <script>
       //This game was made BY @NOXCODES.
-      //Follow my github https://github.com/nooaandersson 
+      //Follow my github https://github.com/nooaandersson
       {
         var script = document.createElement("script");
         script.onload = function () {
@@ -24,7 +24,7 @@
       /**
        * Generate a scene object with a background color
        **/
-      
+
       function getScene() {
         var scene = new THREE.Scene();
         scene.background = new THREE.Color(0x111111);
@@ -33,7 +33,6 @@
       function Tp(x, y, z) {
         sphereGroup.position.set(x, y, z);
       }
-
       function getGravetyOn() {
         gravetyOn = true;
       }
@@ -115,24 +114,24 @@
 
       function CollForPoints(scene) {
         for (i = 0; i < coordsx.length; i++) {
-          if (Math.round(sphereGroup.position.x) == coordsx[i] * 100) {
-            if (Math.round(sphereGroup.position.z) == coordsz[i] * 100) {
-              
+          for (iii = 0; iii < 10; iii++) {
+            var xPos = Math.round(sphereGroup.position.x) + iii;
+            var zPos = Math.round(sphereGroup.position.z) + iii;
+            if (xPos == (coordsx[i] * 100) + iii) {
+              if (zPos == (coordsz[i] * 100) + iii) {
+                console.log(zPos, xPos)
                 var GetObjectForRemoval = scene.getObjectByName(i.toString());
-                
                 scene.remove(GetObjectForRemoval);
-                for(ii = 0; ii < TextArray.length; ii++) {
+                for (ii = 0; ii < TextArray.length; ii++) {
                   var TextObject = scene.getObjectByName(
                     "text" + ii.toString(),
                     true
                   );
-                  if(i == TextArray[ii]) {
+                  if (i == TextArray[ii]) {
                     TextObject.position.x = 1000;
                     speedShp = 50;
                   }
                 }
-                
-
                 if (getPoints == true) {
                   getPoints = false;
                   pointsText = pointsText + 1;
@@ -140,7 +139,7 @@
                     "points"
                   ).innerText = pointsText.toString();
                 }
-              
+              }
             }
           }
         }
@@ -431,7 +430,6 @@
        **/
 
       function moveSphere() {
-        
         var delta = clock.getDelta(); // seconds
         var moveDistance = speedShp * delta;
         var rotateAngle = (Math.PI / 2) * delta; // pi/2 radians (90 deg) per sec
@@ -530,7 +528,7 @@
 
       // globals
       var speedShp = 20;
-       // 200 pixels per second
+      // 200 pixels per second
       var getPoints = true;
       var gravetyOn = true;
       var pointsText = 0;
