@@ -1,614 +1,607 @@
 <html>
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
-  </head>
-  <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
-    <script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
-    <script>
-      //This game was made BY @NOXCODES.
-      //Follow my github https://github.com/nooaandersson
-      {
-        var script = document.createElement("script");
-        script.onload = function () {
-          var stats = new Stats();
-          document.body.appendChild(stats.dom);
-          requestAnimationFrame(function loop() {
-            stats.update();
-            requestAnimationFrame(loop);
-          });
-        };
-        script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
-        document.head.appendChild(script);
-      }
-      /**
-       * Generate a scene object with a background color
-       **/
 
-      function getScene() {
-        var scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111111);
-        return scene;
-      }
-      function Tp(x, y, z) {
-        sphereGroup.position.set(x, y, z);
-      }
-      function getGravetyOn() {
-        gravetyOn = true;
-      }
-      function getGravetyOff() {
-        gravetyOn = false;
-      }
-      function BackTrackLog() {
-        console.log("something is undefined in RenderNodes");
-      }
-      var textLeg = 0;
-      function renderNodes(scene, x, y, z, namee, LoadSpeedUpPowerUp) {
-        if (namee == undefined) {
-          BackTrackLog();
-        } else {
-          if (LoadSpeedUpPowerUp == true) {
-            TextArray.push(i);
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
+</head>
 
-            const loader = new THREE.FontLoader();
-            loader.load(
-              "fonts/helvetiker_regular.typeface.json",
-              function (font) {
-                const geo = new THREE.TextGeometry("Speed Up!", {
-                  font: font,
-                  size: 1,
-                  height: 1,
-                });
-                geo.computeBoundingBox();
-                var textMaterial = new THREE.MeshPhongMaterial({
-                  color: 0xff0000,
-                  specular: 0xffffff,
-                });
-                var mesh = new THREE.Mesh(geo, textMaterial);
-                mesh.position.x = x * 100;
-                mesh.position.y = y + 3;
-                mesh.position.z = z * 100;
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.name = "text" + textLeg;
-                geo.center();
-                scene.add(mesh);
-                textLeg = textLeg + 1;
-              }
-            );
-          }
-
-          var geometry = new THREE.CubeGeometry(2, 2, 2);
-          const color = new THREE.Color("skyblue");
-          var material = new THREE.MeshPhongMaterial({
-            color: color,
-            emissive: color,
-            side: THREE.FrontSide,
-            flatShading: true,
-          });
-          var node = new THREE.Mesh(geometry, material);
-          node.name = namee.toString();
-          node.position.set(x * 100, y, z * 100);
-          scene.add(node);
-        }
-      }
-
-      /**
-       * Generate the camera to be used in the scene. Camera args:
-       *   [0] field of view: identifies the portion of the scene
-       *     visible at any time (in degrees)
-       *   [1] aspect ratio: identifies the aspect ratio of the
-       *     scene in width/height
-       *   [2] near clipping plane: objects closer than the near
-       *     clipping plane are culled from the scene
-       *   [3] far clipping plane: objects farther than the far
-       *     clipping plane are culled from the scene
-       **/
-
-      function AnimateTextPowerUp(scene) {
-        for (i = 0; i < TextArray.length; i++) {
-          var TextToAnimate = scene.getObjectByName("text" + i.toString());
-          TextToAnimate.rotation.y += 0.005;
-        }
-      }
-
-      function CollForPoints(scene) {
-        for (i = 0; i < coordsx.length; i++) {
-          for (iii = 0; iii < 10; iii++) {
-            var xPos = Math.round(sphereGroup.position.x) + iii;
-            var zPos = Math.round(sphereGroup.position.z) + iii;
-            if (xPos == (coordsx[i] * 100) + iii) {
-              if (zPos == (coordsz[i] * 100) + iii) {
-                console.log(zPos, xPos)
-                var GetObjectForRemoval = scene.getObjectByName(i.toString());
-                scene.remove(GetObjectForRemoval);
-                for (ii = 0; ii < TextArray.length; ii++) {
-                  var TextObject = scene.getObjectByName(
-                    "text" + ii.toString(),
-                    true
-                  );
-                  if (i == TextArray[ii]) {
-                    TextObject.position.x = 1000;
-                    speedShp = 50;
-                  }
-                }
-                if (getPoints == true) {
-                  getPoints = false;
-                  pointsText = pointsText + 1;
-                  document.getElementById(
-                    "points"
-                  ).innerText = pointsText.toString();
-                }
-              }
-            }
-          }
-        }
-      }
-
-      function getCamera() {
-        var aspectRatio = window.innerWidth / window.innerHeight;
-        var camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 10000);
-        camera.position.set(0, 150, 400);
-        camera.lookAt(scene.position);
-        return camera;
-      }
-
-      /**
-       * Generate the light to be used in the scene. Light args:v
-       *   [0]: Hexadecimal color of the light
-       *   [1]: Numeric value of the light's strength/intensity
-       *   [2]: The distance from the light where the intensity is 0
-       * @param {obj} scene: the current scene object
-       **/
-
-      function getLight(scene) {
-        var lights = [];
-        lights[0] = new THREE.PointLight(0xffffff, 0.6, 0);
-        lights[0].position.set(100, 200, 100);
-        scene.add(lights[0]);
-
-        var ambientLight = new THREE.AmbientLight(0x111111);
-        scene.add(ambientLight);
-        return light;
-      }
-
-      /**
-       * Generate the renderer to be used in the scene
-       **/
-
-      function getRenderer() {
-        // Create the canvas with a renderer
-        var renderer = new THREE.WebGLRenderer({ antialias: true });
-        // Add support for retina displays
-        renderer.setPixelRatio(window.devicePixelRatio);
-        // Specify the size of the canvas
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        // Add the canvas to the DOM
-        document.body.appendChild(renderer.domElement);
-        return renderer;
-      }
-
-      /**
-       * Generate the controls to be used in the scene
-       * @param {obj} camera: the three.js camera for the scene
-       * @param {obj} renderer: the three.js renderer for the scene
-       **/
-
-      function getControls(camera, renderer) {
-        var controls = new THREE.TrackballControls(camera, renderer.domElement);
-        controls.zoomSpeed = 0.4;
-        controls.panSpeed = 0.4;
-        return controls;
-      }
-      function Collison(scene, px, py, pz) {
-        points.push(new THREE.Vector3(px * 100, py, pz * 100));
-        points.push(
-          new THREE.Vector3(
-            sphereGroup.position.x,
-            sphereGroup.position.y,
-            sphereGroup.position.z
-          )
-        );
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
-        const line = new THREE.Line(geometry, material);
-        scene.add(line);
-        return line;
-      }
-      /**
-       * Get grass
-       **/
-
-      function getsky(scene, loader, x, z, y, side) {
-        var texture = loader.load("sky.jpeg");
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(10, 10);
-        var material = new THREE.MeshBasicMaterial({
-          map: texture,
-          side: side,
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
+  <script>
+    //This game was made BY @NOXCODES.
+    //Follow my github https://github.com/nooaandersson
+    {
+      var script = document.createElement("script");
+      script.onload = function () {
+        var stats = new Stats();
+        document.body.appendChild(stats.dom);
+        requestAnimationFrame(function loop() {
+          stats.update();
+          requestAnimationFrame(loop);
         });
-        var geometry = new THREE.PlaneGeometry(100, 100, 100, 10);
-        var plane = new THREE.Mesh(geometry, material);
-        plane.position.y = y;
-        plane.position.z = 100 * z;
-        plane.position.x = 100 * x;
-        plane.rotation.x = Math.PI / 2;
-        scene.add(plane);
-        return plane;
-      }
-      function getPlane(scene, loader, x, z, y, side) {
-        var texture = loader.load("floor.jpeg");
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(10, 10);
-        var material = new THREE.MeshBasicMaterial({
-          map: texture,
-          side: side,
-        });
-        var geometry = new THREE.PlaneGeometry(100, 100, 100, 10);
-        var plane = new THREE.Mesh(geometry, material);
-        plane.position.y = y;
-        plane.position.z = 100 * z;
-        plane.position.x = 100 * x;
-        plane.rotation.x = Math.PI / 2;
-        scene.add(plane);
-        return plane;
-      }
-      //inte optimalt renderings system.
-      //det är ett optimerat system nu men man måste hardcoda hur står spelyta man har detta gör det svårt att ändra saker ingame sen
-      //men jag har en mattematisk formel för att göra detta så jag kommer implementera det senare så kommer man inte behöva räkna själv.
-      //update rendersystement funkar nu. Nu måste jag bara fixa lite lag det gör jag genom att ändra textuernas infalls
-      //upplösning till något som passar three js bättre.
-      //optmisera med hjälp av mindre figurer de behöver inte vara så stora de kan bara vara några pixlar styck.
-      function renderGround(scene, loader, y, side) {
-        coordsx = [];
-        coordsz = [];
-        var z = 0;
-        var n = 0;
-        var r1 = [1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1];
-        var x = 0;
-        var firstItorantion = true;
-        for (i = 0; i <= r1.length; i++) {
-          if (r1[i] == 2) {
-            if (firstItorantion == true) {
-              var gg = i + 1;
-              firstItorantion = false;
+      };
+      script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
+      document.head.appendChild(script);
+    }
+    /**
+     * Generate a scene object with a background color
+     **/
+
+    function getScene() {
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x111111);
+      return scene;
+    }
+    function Tp(x, y, z) {
+      sphereGroup.position.set(x, y, z);
+    }
+    function getGravetyOn() {
+      gravetyOn = true;
+    }
+    function getGravetyOff() {
+      gravetyOn = false;
+    }
+    function BackTrackLog() {
+      console.log("something is undefined in RenderNodes");
+    }
+    var textLeg = 0;
+    function renderNodes(scene, x, y, z, namee, LoadSpeedUpPowerUp) {
+      if (namee == undefined) {
+        BackTrackLog();
+      } else {
+        if (LoadSpeedUpPowerUp == true) {
+          TextArray.push(i);
+
+          const loader = new THREE.FontLoader();
+          loader.load(
+            "fonts/helvetiker_regular.typeface.json",
+            function (font) {
+              const geo = new THREE.TextGeometry("Speed Up!", {
+                font: font,
+                size: 1,
+                height: 1,
+              });
+              geo.computeBoundingBox();
+              var textMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+                specular: 0xffffff,
+              });
+              var mesh = new THREE.Mesh(geo, textMaterial);
+              mesh.position.x = x * 100;
+              mesh.position.y = y + 3;
+              mesh.position.z = z * 100;
+              mesh.castShadow = true;
+              mesh.receiveShadow = true;
+              mesh.name = "text" + textLeg;
+              geo.center();
+              scene.add(mesh);
+              textLeg = textLeg + 1;
             }
-            x = x + 1;
-            n = x * gg;
-          } else if (r1[i] == 0) {
-            z = i - n;
-            getsky(scene, loader, x, z, y);
-            coordsx.push(x);
-            coordsz.push(z);
-          } else if (r1[i] == 3) {
-            coordsx.push(x);
-            coordsz.push(z);
-          } else {
-            z = i - n;
-            getPlane(scene, loader, x, z, y, side);
-            coordsx.push(x);
-            coordsz.push(z);
-          }
-        }
-      }
-
-      function RenderPointsArray(scene) {
-        for (i = 0; i < coordsx.length; i++) {
-          var random = Math.floor(Math.random() * 5);
-          var RandomPowerUp = false;
-          if (random == i) {
-            RandomPowerUp = true;
-          } else {
-            RandomPowerUp = false;
-          }
-          renderNodes(scene, coordsx[i], -45, coordsz[i], i, RandomPowerUp);
-          console.log(RandomPowerUp);
-        }
-      }
-      /**
-       * Add background
-       **/
-      // skirv i logboken felkälla att de inte går static tal utan de går från dynamisck tal.
-      // folrmen för att lösa detta var (1000 * längden av array) - 500 för att centrera väggarena.
-      // render function funkar glöm inte att uppdatera logboken så det ser bra ut. uträningen för den här denlen är enkel
-      // men kommer behöva lite förendingar.
-      // Måste gör ett collsion system.
-      function getBackground(scene, loader) {
-        var r = [1, 1, 1, 1];
-        var l = [1, 1, 1, 1];
-        var u = [1, 1, 1, 1];
-        var b = [1, 1, 1, 1];
-        var imagePrefix = "";
-        var directions = ["right", "left", "top", "bottom", "front", "back"];
-        var imageSuffix = ".bmp";
-
-        var texture = loader.load("WallTextureStone.jpeg");
-        for (iu = 0; iu < r.length; iu++) {
-          var geometry = new THREE.PlaneGeometry(100, 100, 100);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.BackSide,
-          });
-          var skyr = new THREE.Mesh(geometry, material);
-
-          scene.add(skyr);
-          skyr.position.x = 100 * iu;
-          skyr.position.z = 100 * r.length - 50;
-        }
-        for (ib = 0; ib < l.length; ib++) {
-          var geometry = new THREE.PlaneGeometry(100, 100, 100);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.BackSide,
-          });
-          var skyl = new THREE.Mesh(geometry, material);
-
-          scene.add(skyl);
-
-          skyl.rotation.y = Math.PI / 2;
-          skyl.position.z = 100 * ib;
-          skyl.position.x = 100 * l.length - 50;
+          );
         }
 
-        for (ir = 0; ir < r.length; ir++) {
-          var geometry = new THREE.PlaneGeometry(100, 100, 100);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.FrontSide,
-          });
-          var skyr = new THREE.Mesh(geometry, material);
-
-          scene.add(skyr);
-          skyr.position.x = 100 * ir;
-          skyr.position.z = -50;
-        }
-        for (il = 0; il < l.length; il++) {
-          var geometry = new THREE.PlaneGeometry(100, 100, 100);
-          var material = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.FrontSide,
-          });
-          var skyl = new THREE.Mesh(geometry, material);
-
-          scene.add(skyl);
-
-          skyl.rotation.y = Math.PI / 2;
-          skyl.position.z = 100 * il;
-          skyl.position.x = -50;
-        }
-      }
-
-      /**
-       * Add a character
-       **/
-
-      function getSphere(scene) {
-        var geometry = new THREE.SphereGeometry(3, 1.2, 0.9);
+        var geometry = new THREE.CubeGeometry(2, 2, 2);
+        const color = new THREE.Color("skyblue");
         var material = new THREE.MeshPhongMaterial({
-          color: 0xd0901d,
-          emissive: 0xaf752a,
+          color: color,
+          emissive: color,
           side: THREE.FrontSide,
           flatShading: true,
         });
-        var sphere = new THREE.Mesh(geometry, material);
-
-        // create a group for translations and rotations
-        var sphereGroup = new THREE.Group();
-        sphereGroup.add(sphere);
-
-        sphereGroup.position.set(1, -45, 100);
-
-        scene.add(sphereGroup);
-        return [sphere, sphereGroup];
+        var node = new THREE.Mesh(geometry, material);
+        node.name = namee.toString();
+        node.position.set(x * 100, y, z * 100);
+        scene.add(node);
       }
+    }
 
-      /**
-       * Store all currently pressed keys
-       **/
+    /**
+     * Generate the camera to be used in the scene. Camera args:
+     *   [0] field of view: identifies the portion of the scene
+     *     visible at any time (in degrees)
+     *   [1] aspect ratio: identifies the aspect ratio of the
+     *     scene in width/height
+     *   [2] near clipping plane: objects closer than the near
+     *     clipping plane are culled from the scene
+     *   [3] far clipping plane: objects farther than the far
+     *     clipping plane are culled from the scene
+     **/
 
-      function addListeners() {
-        window.addEventListener("keydown", function (e) {
-          pressed[e.key.toUpperCase()] = true;
-          console.log(
-            Math.round(sphereGroup.position.x),
-            Math.round(sphereGroup.position.z)
-          );
-          isMoving = true;
-        });
-        window.addEventListener("keyup", function (e) {
-          pressed[e.key.toUpperCase()] = false;
-          console.log(
-            Math.round(sphereGroup.position.x),
-            Math.round(sphereGroup.position.z)
-          );
-          isMoving = false;
-        });
+    function AnimateTextPowerUp(scene) {
+      for (i = 0; i < TextArray.length; i++) {
+        var TextToAnimate = scene.getObjectByName("text" + i.toString());
+        TextToAnimate.rotation.y += 0.005;
       }
+    }
 
-      /**
-       * Update the sphere's position
-       **/
+    function CollForPoints(scene) {
+      for (i = 0; i < coordsx.length; i++) {
+        var xPos = Math.round(sphereGroup.position.x);
+        var zPos = Math.round(sphereGroup.position.z);
 
-      function moveSphere() {
-        var delta = clock.getDelta(); // seconds
-        var moveDistance = speedShp * delta;
-        var rotateAngle = (Math.PI / 2) * delta; // pi/2 radians (90 deg) per sec
-        var speed = 3;
-        // move forwards/backwards/left/right
-        if (pressed["W"]) {
-          sphere.rotateOnAxis(new THREE.Vector3(1, 0, 0), -rotateAngle);
-          sphereGroup.translateZ(-moveDistance);
-        }
-        if (pressed["S"]) sphereGroup.translateZ(moveDistance);
-        if (pressed["Q"]) sphereGroup.translateX(-moveDistance);
-        if (pressed["E"]) sphereGroup.translateX(moveDistance);
+        if (xPos < (coordsx[i] * 100) + 3 && xPos + 3 > (coordsx[i] * 100)) {
+          if (zPos < (coordsz[i] * 100) + 3 && zPos + 3 > (coordsz[i] * 100)) {
+            console.log(zPos, xPos)
 
-        // rotate left/right/up/down
-        var rotation_matrix = new THREE.Matrix4().identity();
-        if (pressed["A"])
-          sphereGroup.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
-        if (pressed["D"])
-          sphereGroup.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
-        if (pressed["R"])
-          sphereGroup.rotateOnAxis(new THREE.Vector3(1, 0, 0), rotateAngle);
-        if (pressed["F"])
-          sphereGroup.rotateOnAxis(new THREE.Vector3(1, 0, 0), -rotateAngle);
+            var GetObjectForRemoval = scene.getObjectByName(i.toString());
+            GetObjectForRemoval.position.x = 1000
 
-        if (pressed[" "]) {
-          if (globalJump == true) {
-            sphereGroup.position.y += speed * 2000 * delta;
-            console.log(sphereGroup.position.y);
-            globalJump = false;
-            setTimeout(() => {
-              globalJump = true;
-            }, 1000);
+            for (ii = 0; ii < TextArray.length; ii++) {
+              var TextObject = scene.getObjectByName(
+                "text" + ii.toString(),
+                true
+              );
+              if (i == TextArray[ii]) {
+                TextObject.position.x = 1000;
+                speedShp = 50;
+              }
+            }
+            getpoints()
+            console.log("done")
           }
         }
       }
+    }
 
-      /**
-       * Follow the sphere
-       **/
+    function getpoints() {
+      if(getPoints == true) {
+        pointsText = pointsText + 1;
+        document.getElementById("points").innerText = pointsText.toString();
+        getPoints = false;
+      }
+    }
+    function getCamera() {
+      var aspectRatio = window.innerWidth / window.innerHeight;
+      var camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 10000);
+      camera.position.set(0, 150, 400);
+      camera.lookAt(scene.position);
+      return camera;
+    }
 
-      function moveCamera() {
-        var relativeCameraOffset = new THREE.Vector3(0, 5, 20);
-        var cameraOffset = relativeCameraOffset.applyMatrix4(
-          sphereGroup.matrixWorld
+    /**
+     * Generate the light to be used in the scene. Light args:v
+     *   [0]: Hexadecimal color of the light
+     *   [1]: Numeric value of the light's strength/intensity
+     *   [2]: The distance from the light where the intensity is 0
+     * @param {obj} scene: the current scene object
+     **/
+
+    function getLight(scene) {
+      var lights = [];
+      lights[0] = new THREE.PointLight(0xffffff, 0.6, 0);
+      lights[0].position.set(100, 200, 100);
+      scene.add(lights[0]);
+
+      var ambientLight = new THREE.AmbientLight(0x111111);
+      scene.add(ambientLight);
+      return light;
+    }
+
+    /**
+     * Generate the renderer to be used in the scene
+     **/
+
+    function getRenderer() {
+      // Create the canvas with a renderer
+      var renderer = new THREE.WebGLRenderer({ antialias: true });
+      // Add support for retina displays
+      renderer.setPixelRatio(window.devicePixelRatio);
+      // Specify the size of the canvas
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      // Add the canvas to the DOM
+      document.body.appendChild(renderer.domElement);
+      return renderer;
+    }
+
+    /**
+     * Generate the controls to be used in the scene
+     * @param {obj} camera: the three.js camera for the scene
+     * @param {obj} renderer: the three.js renderer for the scene
+     **/
+
+    function getControls(camera, renderer) {
+      var controls = new THREE.TrackballControls(camera, renderer.domElement);
+      controls.zoomSpeed = 0.4;
+      controls.panSpeed = 0.4;
+      return controls;
+    }
+    function Collison(scene, px, py, pz) {
+      points.push(new THREE.Vector3(px * 100, py, pz * 100));
+      points.push(
+        new THREE.Vector3(
+          sphereGroup.position.x,
+          sphereGroup.position.y,
+          sphereGroup.position.z
+        )
+      );
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      const line = new THREE.Line(geometry, material);
+      scene.add(line);
+      return line;
+    }
+    /**
+     * Get grass
+     **/
+
+    function getsky(scene, loader, x, z, y, side) {
+      var texture = loader.load("sky.jpeg");
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(10, 10);
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: side,
+      });
+      var geometry = new THREE.PlaneGeometry(100, 100, 100, 10);
+      var plane = new THREE.Mesh(geometry, material);
+      plane.position.y = y;
+      plane.position.z = 100 * z;
+      plane.position.x = 100 * x;
+      plane.rotation.x = Math.PI / 2;
+      scene.add(plane);
+      return plane;
+    }
+    function getPlane(scene, loader, x, z, y, side) {
+      var texture = loader.load("floor.jpeg");
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(10, 10);
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: side,
+      });
+      var geometry = new THREE.PlaneGeometry(100, 100, 100, 10);
+      var plane = new THREE.Mesh(geometry, material);
+      plane.position.y = y;
+      plane.position.z = 100 * z;
+      plane.position.x = 100 * x;
+      plane.rotation.x = Math.PI / 2;
+      scene.add(plane);
+      return plane;
+    }
+    //inte optimalt renderings system.
+    //det är ett optimerat system nu men man måste hardcoda hur står spelyta man har detta gör det svårt att ändra saker ingame sen
+    //men jag har en mattematisk formel för att göra detta så jag kommer implementera det senare så kommer man inte behöva räkna själv.
+    //update rendersystement funkar nu. Nu måste jag bara fixa lite lag det gör jag genom att ändra textuernas infalls
+    //upplösning till något som passar three js bättre.
+    //optmisera med hjälp av mindre figurer de behöver inte vara så stora de kan bara vara några pixlar styck.
+    function renderGround(scene, loader, y, side) {
+      coordsx = [];
+      coordsz = [];
+      var z = 0;
+      var n = 0;
+      var r1 = [1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1];
+      var x = 0;
+      var firstItorantion = true;
+      for (i = 0; i <= r1.length; i++) {
+        if (r1[i] == 2) {
+          if (firstItorantion == true) {
+            var gg = i + 1;
+            firstItorantion = false;
+          }
+          x = x + 1;
+          n = x * gg;
+        } else if (r1[i] == 0) {
+          z = i - n;
+          getsky(scene, loader, x, z, y);
+          coordsx.push(x);
+          coordsz.push(z);
+        } else if (r1[i] == 3) {
+          coordsx.push(x);
+          coordsz.push(z);
+        } else {
+          z = i - n;
+          getPlane(scene, loader, x, z, y, side);
+          coordsx.push(x);
+          coordsz.push(z);
+        }
+      }
+    }
+
+    function RenderPointsArray(scene) {
+      for (i = 0; i < coordsx.length; i++) {
+        var random = Math.floor(Math.random() * 5);
+        var RandomPowerUp = false;
+        if (random == i) {
+          RandomPowerUp = true;
+        } else {
+          RandomPowerUp = false;
+        }
+        renderNodes(scene, coordsx[i], -45, coordsz[i], i, RandomPowerUp);
+        console.log(RandomPowerUp);
+      }
+    }
+    /**
+     * Add background
+     **/
+    // skirv i logboken felkälla att de inte går static tal utan de går från dynamisck tal.
+    // folrmen för att lösa detta var (1000 * längden av array) - 500 för att centrera väggarena.
+    // render function funkar glöm inte att uppdatera logboken så det ser bra ut. uträningen för den här denlen är enkel
+    // men kommer behöva lite förendingar.
+    // Måste gör ett collsion system.
+    function getBackground(scene, loader) {
+      var r = [1, 1, 1, 1];
+      var l = [1, 1, 1, 1];
+      var u = [1, 1, 1, 1];
+      var b = [1, 1, 1, 1];
+      var imagePrefix = "";
+      var directions = ["right", "left", "top", "bottom", "front", "back"];
+      var imageSuffix = ".bmp";
+
+      var texture = loader.load("WallTextureStone.jpeg");
+      for (iu = 0; iu < r.length; iu++) {
+        var geometry = new THREE.PlaneGeometry(100, 100, 100);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          side: THREE.BackSide,
+        });
+        var skyr = new THREE.Mesh(geometry, material);
+
+        scene.add(skyr);
+        skyr.position.x = 100 * iu;
+        skyr.position.z = 100 * r.length - 50;
+      }
+      for (ib = 0; ib < l.length; ib++) {
+        var geometry = new THREE.PlaneGeometry(100, 100, 100);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          side: THREE.BackSide,
+        });
+        var skyl = new THREE.Mesh(geometry, material);
+
+        scene.add(skyl);
+
+        skyl.rotation.y = Math.PI / 2;
+        skyl.position.z = 100 * ib;
+        skyl.position.x = 100 * l.length - 50;
+      }
+
+      for (ir = 0; ir < r.length; ir++) {
+        var geometry = new THREE.PlaneGeometry(100, 100, 100);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          side: THREE.FrontSide,
+        });
+        var skyr = new THREE.Mesh(geometry, material);
+
+        scene.add(skyr);
+        skyr.position.x = 100 * ir;
+        skyr.position.z = -50;
+      }
+      for (il = 0; il < l.length; il++) {
+        var geometry = new THREE.PlaneGeometry(100, 100, 100);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+          side: THREE.FrontSide,
+        });
+        var skyl = new THREE.Mesh(geometry, material);
+
+        scene.add(skyl);
+
+        skyl.rotation.y = Math.PI / 2;
+        skyl.position.z = 100 * il;
+        skyl.position.x = -50;
+      }
+    }
+
+    /**
+     * Add a character
+     **/
+
+    function getSphere(scene) {
+      var geometry = new THREE.SphereGeometry(3, 3, 3);
+      var material = new THREE.MeshPhongMaterial({
+        color: 0xd0901d,
+        emissive: 0xaf752a,
+        side: THREE.FrontSide,
+        flatShading: true,
+      });
+      var sphere = new THREE.Mesh(geometry, material);
+
+      // create a group for translations and rotations
+      var sphereGroup = new THREE.Group();
+      sphereGroup.add(sphere);
+
+      sphereGroup.position.set(1, -45, 100);
+
+      scene.add(sphereGroup);
+      return [sphere, sphereGroup];
+    }
+
+    /**
+     * Store all currently pressed keys
+     **/
+
+    function addListeners() {
+      window.addEventListener("keydown", function (e) {
+        pressed[e.key.toUpperCase()] = true;
+        console.log(
+          Math.round(sphereGroup.position.x),
+          Math.round(sphereGroup.position.z)
         );
-        camera.position.x = cameraOffset.x;
-        camera.position.y = cameraOffset.y;
-        camera.position.z = cameraOffset.z;
-        camera.lookAt(sphereGroup.position);
+        isMoving = true;
+      });
+      window.addEventListener("keyup", function (e) {
+        pressed[e.key.toUpperCase()] = false;
+        console.log(
+          Math.round(sphereGroup.position.x),
+          Math.round(sphereGroup.position.z)
+        );
+        isMoving = false;
+      });
+    }
+
+    /**
+     * Update the sphere's position
+     **/
+
+    function moveSphere() {
+      var delta = clock.getDelta(); // seconds
+      var moveDistance = speedShp * delta;
+      var rotateAngle = (Math.PI / 2) * delta; // pi/2 radians (90 deg) per sec
+      var speed = 3;
+      // move forwards/backwards/left/right
+      if (pressed["W"]) {
+        sphere.rotateOnAxis(new THREE.Vector3(1, 0, 0), -rotateAngle);
+        sphereGroup.translateZ(-moveDistance);
       }
-      var timee = true;
-      // Render loop
-      if (timee == true) {
-        setInterval(() => {
-          time();
-        }, 1000);
-      }
-      function render() {
-        requestAnimationFrame(render);
-        renderer.render(scene, camera);
-        CollForPoints(scene);
-        moveSphere();
-        moveCamera();
-        AnimateTextPowerUp(scene);
-        setTimeout(function f() {
-          getPoints = true;
-        }, 1000);
-        if (gravetyOn == true) {
-          gravety();
+      if (pressed["S"]) sphereGroup.translateZ(moveDistance);
+      if (pressed["Q"]) sphereGroup.translateX(-moveDistance);
+      if (pressed["E"]) sphereGroup.translateX(moveDistance);
+
+      // rotate left/right/up/down
+      var rotation_matrix = new THREE.Matrix4().identity();
+      if (pressed["A"])
+        sphereGroup.rotateOnAxis(new THREE.Vector3(0, 1, 0), rotateAngle);
+      if (pressed["D"])
+        sphereGroup.rotateOnAxis(new THREE.Vector3(0, 1, 0), -rotateAngle);
+      if (pressed["R"])
+        sphereGroup.rotateOnAxis(new THREE.Vector3(1, 0, 0), rotateAngle);
+      if (pressed["F"])
+        sphereGroup.rotateOnAxis(new THREE.Vector3(1, 0, 0), -rotateAngle);
+
+      if (pressed[" "]) {
+        if (globalJump == true) {
+          sphereGroup.position.y += speed * 2000 * delta;
+          console.log(sphereGroup.position.y);
+          globalJump = false;
+          setTimeout(() => {
+            globalJump = true;
+          }, 1000);
         }
       }
-      function gravety() {
-        if (gravetyOn == true) {
-          if (sphereGroup.position.y > -45) {
-            sphereGroup.position.y -= 5;
-          }
+    }
+
+    /**
+     * Follow the sphere
+     **/
+
+    function moveCamera() {
+      var relativeCameraOffset = new THREE.Vector3(0, 5, 20);
+      var cameraOffset = relativeCameraOffset.applyMatrix4(
+        sphereGroup.matrixWorld
+      );
+      camera.position.x = cameraOffset.x;
+      camera.position.y = cameraOffset.y;
+      camera.position.z = cameraOffset.z;
+      camera.lookAt(sphereGroup.position);
+    }
+    var timee = true;
+    // Render loop
+    if (timee == true) {
+      setInterval(() => {
+        time();
+      }, 1000);
+    }
+    function render() {
+      requestAnimationFrame(render);
+      renderer.render(scene, camera);
+      CollForPoints(scene);
+      moveSphere();
+      moveCamera();
+      AnimateTextPowerUp(scene);
+      
+      if (gravetyOn == true) {
+        gravety();
+      }
+    }
+    
+    function gravety() {
+      if (gravetyOn == true) {
+        if (sphereGroup.position.y > -45) {
+          sphereGroup.position.y -= 5;
         }
       }
-      var timeClock = 60;
-      function time() {
-        var getDocument = document.getElementById("time");
+    }
+    var timeClock = 60;
+    function time() {
+      var getDocument = document.getElementById("time");
 
-        timeClock = timeClock - 1;
+      timeClock = timeClock - 1;
 
-        getDocument.innerText = timeClock;
-        if (timeClock == 0) {
-          var gameover = document.getElementById("gameover");
-          gameover.hidden = false;
-          timee = false;
-        }
+      getDocument.innerText = timeClock;
+      if (timeClock == 0) {
+        var gameover = document.getElementById("gameover");
+        gameover.hidden = false;
+        timee = false;
       }
+    }
 
-      // state
-      var pressed = {};
-      var clock = new THREE.Clock();
+    // state
+    var pressed = {};
+    var clock = new THREE.Clock();
 
-      // globals
-      var speedShp = 20;
-      // 200 pixels per second
-      var getPoints = true;
-      var gravetyOn = true;
-      var pointsText = 0;
-      var points = [];
-      var coordsx = [];
-      var coordsz = [];
-      var TextArray = [];
-      var globalJump = true;
-      var scene = getScene();
-      var camera = getCamera();
-      var light = getLight(scene);
-      var renderer = getRenderer();
+    // globals
+    var speedShp = 20;
+    // 200 pixels per second
+    var getPoints = true;
+    var gravetyOn = true;
+    var pointsText = 0;
+    var points = [];
+    var coordsx = [];
+    var coordsz = [];
+    var TextArray = [];
+    var globalJump = true;
+    var scene = getScene();
+    var camera = getCamera();
+    var light = getLight(scene);
+    var renderer = getRenderer();
 
-      var gobalJump = true;
+    var gobalJump = true;
 
-      // add meshes
-      var loader = new THREE.TextureLoader();
-      var background = getBackground(scene, loader);
-      var sphereData = getSphere(scene);
-      var sphere = sphereData[0];
-      var sphereGroup = sphereData[1];
+    // add meshes
+    var loader = new THREE.TextureLoader();
+    var background = getBackground(scene, loader);
+    var sphereData = getSphere(scene);
+    var sphere = sphereData[0];
+    var sphereGroup = sphereData[1];
 
-      var floor = renderGround(scene, loader, -50, THREE.BackSide);
-      var ceiling = renderGround(scene, loader, 50, THREE.FrontSide);
-      var RenderPoints = RenderPointsArray(scene);
+    var floor = renderGround(scene, loader, -50, THREE.BackSide);
+    var ceiling = renderGround(scene, loader, 50, THREE.FrontSide);
+    var RenderPoints = RenderPointsArray(scene);
 
-      addListeners();
-      render();
-    </script>
-    <h1
-      hidden
-      id="gameover"
-      style="
+    addListeners();
+    render();
+  </script>
+  <h1 hidden id="gameover" style="
         margin-left: 500px;
         margin-top: -690px;
         position: absolute;
         z-index: 0;
         font-size: 40;
         font-family: Arial, Helvetica, sans-serif;
-      "
-    >
-      GAME OVER (RELOAD TO PLAY AGAIN)
-    </h1>
-    <p
-      id="time"
-      style="
+      ">
+    GAME OVER (RELOAD TO PLAY AGAIN)
+  </h1>
+  <p id="time" style="
         margin-left: 350px;
         margin-top: -690px;
         position: absolute;
         z-index: 0;
         font-size: 40;
         font-family: Arial, Helvetica, sans-serif;
-      "
-    >
-      Time : 60
-    </p>
-    <p
-      style="
+      ">
+    Time : 60
+  </p>
+  <p style="
         margin-left: 100px;
         margin-top: -690px;
         position: absolute;
         z-index: 0;
         font-size: 40;
         font-family: Arial, Helvetica, sans-serif;
-      "
-    >
-      Points :
-    </p>
-    <p
-      id="points"
-      style="
+      ">
+    Points :
+  </p>
+  <p id="points" style="
         margin-left: 250px;
         margin-top: -690px;
         position: absolute;
         z-index: 0;
         font-size: 40;
         font-family: Arial, Helvetica, sans-serif;
-      "
-    >
-      0
-    </p>
-  </body>
+      ">
+    0
+  </p>
+</body>
+
 </html>
